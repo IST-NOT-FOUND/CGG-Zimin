@@ -44,32 +44,18 @@ function initShaders() {
 	shaderProgram.NormalMatrix = gl.getUniformLocation(shaderProgram, "uNMatrix");
 
 	// настройка переменных uniform освещения для передачи в шейдер
-	// позиция источника света
 	shaderProgram.uniformLightPosition = gl.getUniformLocation(shaderProgram, "uLightPosition");
-	// фоновое отражение света
-	shaderProgram.uniformAmbientLightColor = gl.getUniformLocation(shaderProgram, "uAmbientLightColor");
-	// диффузное отражение света
 	shaderProgram.uniformDiffuseLightColor = gl.getUniformLocation(shaderProgram, "uDiffuseLightColor");
-	// зеркальное отражение света
-	shaderProgram.uniformSpecularLightColor = gl.getUniformLocation(shaderProgram, "uSpecularLightColor");
-
-
-	shaderProgram.uniformAmbientMaterialColor = gl.getUniformLocation(shaderProgram, "uAmbientMaterialColor");
 	shaderProgram.uniformDiffuseMaterialColor = gl.getUniformLocation(shaderProgram, "uDiffuseMaterialColor");
-	shaderProgram.uniformSpecularMaterialColor = gl.getUniformLocation(shaderProgram, "uSpecularMaterialColor");
 }
 // настройка цветов освещения
 function setupLights() {
   gl.uniform3fv(shaderProgram.uniformLightPosition, [0.0, 10.0, 5.0]);
-  gl.uniform3fv(shaderProgram.uniformAmbientLightColor, [0.1, 0.1, 0.1]);
-  gl.uniform3fv(shaderProgram.uniformDiffuseLightColor, [0.7, 0.7, 0.7]);
-  gl.uniform3fv(shaderProgram.uniformSpecularLightColor, [1.0, 1.0, 1.0]);
+  gl.uniform3fv(shaderProgram.uniformDiffuseLightColor, [1.0,1.0,1.0]);
 }
 // установка материалов
 function setupMaterials() {
-  gl.uniform3fv(shaderProgram.uniformAmbientMaterialColor, [0.0, 1.0, 0.0]);
-  gl.uniform3fv(shaderProgram.uniformDiffuseMaterialColor, [0.7, 0.7, 0.7]);
-  gl.uniform3fv(shaderProgram.uniformSpecularMaterialColor, [1.0, 1.0, 1.0]);
+  gl.uniform3fv(shaderProgram.uniformDiffuseMaterialColor, [0.0, 1.0, 1.0]);
 }
 function setMatrixUniforms(){
 
@@ -95,44 +81,35 @@ function getShader(type,id) {
 
 function initBuffers() {
 
-	var	vertices =[
-				// лицевая часть
-				-0.5, -0.5, 0.5, //v0
-				-0.5, 0.5, 0.5,  //v1
-				 0.5, 0.5, 0.5,  //v2
-				 0.5, -0.5, 0.5, //v3
-				// задняя часть
-				-0.5, -0.5, -0.5, //v4
-				-0.5, 0.5, -0.5,  //v5
-				 0.5, 0.5, -0.5,  //v6
-				 0.5, -0.5, -0.5,  //v7
 
-				 // левая боковая часть
-				 -0.5, -0.5, 0.5, //v8
-				-0.5, 0.5, 0.5,  //v9
-				-0.5, 0.5, -0.5, //v10
-				-0.5, -0.5, -0.5, //v11
-
-				// правая боковая часть
-				 0.5, -0.5, 0.5,  //v12
-				0.5, 0.5, 0.5,    //v13
-				 0.5, 0.5, -0.5,  //v14
-				 0.5, -0.5, -0.5  //v15
-		];
-
-    var indices = [ // лицевая часть
-				0, 1, 2,
-				2, 3, 0,
-				// задняя часть
-				4, 5, 6,
-				6, 7, 4,
-				//левая боковая часть
-				8, 9, 10,
-				10, 11, 8,
-				// правая боковая часть
-				12, 13, 14,
-				14, 15, 12
-			];
+	var vertices =[
+		 -0.5, -0.5, 0.5,
+		 0, 0.5, 0,
+		 0, 0.5, 0,
+		 0.5, -0.5, 0.5,
+		 -0.5, -0.5, -0.5,
+		 0, 0.5, 0,
+		 0, 0.5, 0,
+		 0.5, -0.5, -0.5,
+		 -0.5, -0.5, 0.5,
+		 0, 0.5, 0,
+		 0, 0.5, 0,
+		 -0.5, -0.5, -0.5,
+		 0.5, -0.5, 0.5,
+		 0, 0.5, 0,
+		 0, 0.5, 0,
+		 0.5, -0.5, -0.5
+ ];
+ var indices = [
+		 0, 1, 2,
+		 2, 3, 0,
+		 4, 5, 6,
+		 6, 7, 4,
+		 8, 9, 10,
+		 10, 11, 8,
+		 12, 13, 14,
+		 14, 15, 12
+	 ]
 
   vertexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -205,17 +182,8 @@ function setupWebGL()
 
 	mat3.normalFromMat4(nMatrix, mvMatrix);
 }
-function setTextures(){
-    texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    var image = new Image();
-    image.onload = function() {
-        handleTextureLoaded(image, texture);
-    };
-    image.src = "../src/images/texture/ride.png";
-    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
-    gl.uniform1i(shaderProgram.samplerUniform, 0);
-}
+
+
 
 window.onload=function(){
 
@@ -244,6 +212,17 @@ window.onload=function(){
 			requestAnimFrame(animloop, canvas);
 		})();
 	}
+}
+function setTextures(){
+    texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    var image = new Image();
+    image.onload = function() {
+        handleTextureLoaded(image, texture);
+    };
+    image.src = "../src/images/texture/ride.png";
+    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+    gl.uniform1i(shaderProgram.samplerUniform, 0);
 }
 function handleKeyDown(e){
 	switch(e.keyCode)
