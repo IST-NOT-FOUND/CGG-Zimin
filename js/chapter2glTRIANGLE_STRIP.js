@@ -43,7 +43,8 @@ function getShader(type,id) {
  // установка вершинного буфера
 function initBuffers() {
 
-    vertices =[ -0.5,  -0.5,  0.0, //m0
+    vertices =[
+      -0.5,  -0.5,  0.0, //m0
        -0.5,  0.5,  0.0, //m1
        0.0,  0.0,  0.0, //m2
        0.5,  0.5,  0.0, //m3
